@@ -6,16 +6,16 @@
 #    By: rbony <rbony@corobizar.com>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/15 19:10:43 by rbony             #+#    #+#              #
-#    Updated: 2023/03/15 19:10:43 by rbony            ###   ########lyon.fr    #
+#    Updated: 2023/03/18 12:37:27 by rbony            ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = btc
+NAME = RPN
 
 SRCS =	main.cpp \
-		BitcoinExchange.cpp
+		RPN.cpp
 
-HEADERS = BitcoinExchange.hpp
+HEADERS = RPN.hpp
 
 CC = c++
 RM = rm -f

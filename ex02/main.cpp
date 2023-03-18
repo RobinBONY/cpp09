@@ -5,30 +5,29 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: rbony <rbony@corobizar.com>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/15 19:10:53 by rbony             #+#    #+#             */
-/*   Updated: 2023/03/18 12:57:24 by rbony            ###   ########lyon.fr   */
+/*   Created: 2023/03/18 13:51:12 by rbony             #+#    #+#             */
+/*   Updated: 2023/03/18 13:58:42 by rbony            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "BitcoinExchange.hpp"
+#include "PmergeMe.hpp"
 
 int main(int argc, char**argv)
 {
-    if(argc < 2)
-    {
-        std::cout << "Usage: " << argv[0] << " <filename>" << std::endl;
-        return (1);
-    }
+  if(argc < 2)
+  {
+    std::cout << "Usage: " << argv[0] << " <expression>" << std::endl;
+    return (1);
+  }
 
+  try
+  {
+    PmergeMe merge(argc, argv);
+  }
+  catch(const std::exception& e)
+  {
+    std::cerr << e.what() << '\n';
+  }
 
-    try
-    {
-        std::string filename = argv[1];
-        BitcoinExchange change(filename);
-    }
-    catch(const std::exception& e)
-    {
-        std::cerr << e.what() << '\n';
-    }
-    
+  return 0;
 }

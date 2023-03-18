@@ -6,16 +6,16 @@
 #    By: rbony <rbony@corobizar.com>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/15 19:10:43 by rbony             #+#    #+#              #
-#    Updated: 2023/03/15 19:10:43 by rbony            ###   ########lyon.fr    #
+#    Updated: 2023/03/18 13:51:23 by rbony            ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = btc
+NAME = PmergeMe
 
 SRCS =	main.cpp \
-		BitcoinExchange.cpp
+		PmergeMe.cpp
 
-HEADERS = BitcoinExchange.hpp
+HEADERS = PmergeMe.hpp
 
 CC = c++
 RM = rm -f
