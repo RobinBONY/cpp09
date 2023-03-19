@@ -6,7 +6,7 @@
 /*   By: rbony <rbony@corobizar.com>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/18 13:51:16 by rbony             #+#    #+#             */
-/*   Updated: 2023/03/18 18:33:09 by rbony            ###   ########lyon.fr   */
+/*   Updated: 2023/03/19 17:08:19 by rbony            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,22 @@
 
 PmergeMe::PmergeMe(int argc, char** argv)
 {
-    std::chrono::_V2::system_clock::time_point start, end;
-    std::chrono::microseconds duration;
+    clock_t start, end;
+    double duration;
     
-    start = std::chrono::high_resolution_clock::now();
+    start = clock();
     sortList(argc, argv);
-    end = std::chrono::high_resolution_clock::now();
-    duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    end = clock();
+    duration = (double)(end - start) / CLOCKS_PER_SEC * 1000000;
 
-    std::cout << "Time to process a range of " << list.size() << " elements with std::list : " << duration.count() << " us" << std::endl;
+    std::cout << "Time to process a range of " << list.size() << " elements with std::list : " << duration << " us" << std::endl;
     
-    start = std::chrono::high_resolution_clock::now();
+    start = clock();
     sortVector(argc, argv);
-    end = std::chrono::high_resolution_clock::now();
-    duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    end = clock();
+    duration = (double)(end - start) / CLOCKS_PER_SEC * 1000000;
     
-    std::cout << "Time to process a range of " << vector.size() << " elements with std::vector : " << duration.count() << " us" << std::endl;
+    std::cout << "Time to process a range of " << vector.size() << " elements with std::vector : " << duration << " us" << std::endl;
 }
 
 PmergeMe::~PmergeMe()

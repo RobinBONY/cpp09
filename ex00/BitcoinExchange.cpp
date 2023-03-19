@@ -6,7 +6,7 @@
 /*   By: rbony <rbony@corobizar.com>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 19:10:45 by rbony             #+#    #+#             */
-/*   Updated: 2023/03/15 19:10:45 by rbony            ###   ########lyon.fr   */
+/*   Updated: 2023/03/19 16:04:13 by rbony            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,17 @@ void BitcoinExchange::readData()
     }
 }
 
+std::string BitcoinExchange::removeWhitespaces(const std::string &str) const
+{
+    std::string newStr = "";
+    for (std::string::const_iterator it = str.begin(); it != str.end(); it++)
+    {
+        if(!std::isspace(*it))
+            newStr += *it;
+    }
+    return newStr;
+}
+
 void BitcoinExchange::exchange() const 
 {
     std::ifstream data(this->filename);
@@ -63,10 +74,10 @@ void BitcoinExchange::exchange() const
         std::string date, value;
 
         std::getline(ss, date, '|');
-        date.erase(remove_if(date.begin(), date.end(), ::isspace), date.end());
+        date = removeWhitespaces(date);
         std::getline(ss, value, '|');
-        value.erase(remove_if(value.begin(), value.end(), ::isspace), value.end());
-
+        value = removeWhitespaces(value);
+        
         try
         {
             num = std::stol(value);
@@ -77,7 +88,7 @@ void BitcoinExchange::exchange() const
                     ExchangeException ex("Error: not a positive number.");
                     throw ex;
                 }
-                if (num > 2147483647)
+                if (num > 1000)
                 {
                     ExchangeException ex("Error: too large a number.");
                     throw ex;
@@ -85,6 +96,11 @@ void BitcoinExchange::exchange() const
                 std::map<std::string, float>::const_iterator it = this->data.lower_bound(date);
                 if (it != this->data.end())
                     std::cout << date << " => " << value << " = " << it->second * num << std::endl;
+                else
+                {
+                    ExchangeException ex("Error: wrong date.");
+                    throw ex;
+                }
             }
             catch(const std::exception& e)
             {

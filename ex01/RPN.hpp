@@ -6,7 +6,7 @@
 /*   By: rbony <rbony@corobizar.com>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/18 12:26:02 by rbony             #+#    #+#             */
-/*   Updated: 2023/03/18 13:19:16 by rbony            ###   ########lyon.fr   */
+/*   Updated: 2023/03/19 16:48:57 by rbony            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ class ReversePolishNotation
     private:
         std::stack<int> tokens;
 
+        int checkToken(const std::string &str) const;
         ReversePolishNotation(const ReversePolishNotation &f);
         ReversePolishNotation &operator=(const ReversePolishNotation &f);
         ReversePolishNotation();

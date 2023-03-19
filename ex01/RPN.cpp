@@ -6,11 +6,21 @@
 /*   By: rbony <rbony@corobizar.com>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/18 12:25:47 by rbony             #+#    #+#             */
-/*   Updated: 2023/03/18 13:22:01 by rbony            ###   ########lyon.fr   */
+/*   Updated: 2023/03/19 16:50:40 by rbony            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "RPN.hpp"
+
+int ReversePolishNotation::checkToken(const std::string &str) const
+{
+  for (size_t i = 0; i < str.size(); i++)
+  {
+    if (!isdigit(str[i]))
+      return 0;
+  }
+  return 1;  
+}
 
 ReversePolishNotation::ReversePolishNotation(std::string expression)
 {
@@ -18,17 +28,16 @@ ReversePolishNotation::ReversePolishNotation(std::string expression)
   std::stringstream ss(expression);
   
   while (std::getline(ss, token, ' ')) {
-    if (isdigit(token[0])) 
+    if (checkToken(token)) 
     {
         int digit = std::stoi(token);
         if (digit < 10)
-            this->tokens.push(std::stoi(token));
+            this->tokens.push(digit);
         else
         {
-            OperationException ex("Error");
-            throw ex;
+            this->tokens.push(digit / 10);
+            this->tokens.push(digit % 10);
         }
-
     } 
     else if(token == "+" || token == "-" || token == "*" || token == "/")
     {
