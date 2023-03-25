@@ -6,7 +6,7 @@
 /*   By: rbony <rbony@corobizar.com>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 19:10:53 by rbony             #+#    #+#             */
-/*   Updated: 2023/03/19 16:06:21 by rbony            ###   ########lyon.fr   */
+/*   Updated: 2023/03/25 09:05:35 by rbony            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ int main(int argc, char**argv)
 
     try
     {
-        std::string filename = argv[1];
-        BitcoinExchange change(filename);
+        BitcoinExchange btc("data.csv");
+        btc.exchange(argv[1]);
     }
     catch(const std::exception& e)
     {

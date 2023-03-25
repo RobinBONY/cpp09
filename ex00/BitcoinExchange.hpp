@@ -6,7 +6,7 @@
 /*   By: rbony <rbony@corobizar.com>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 19:10:47 by rbony             #+#    #+#             */
-/*   Updated: 2023/03/19 16:47:07 by rbony            ###   ########lyon.fr   */
+/*   Updated: 2023/03/25 09:05:20 by rbony            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,22 +25,17 @@ class BitcoinExchange
 
 
 private:
-    const std::string filename;
-    std::map<std::string, float> data;
+    const std::string _dbname;
+    std::map<std::string, float> _data;
 
+    void                            readData();
+    std::string                     removeWhitespaces(const std::string &str) const;
+    char                            findDelimiter(const std::string &line) const;
 
     BitcoinExchange(const BitcoinExchange &f);
     BitcoinExchange &operator=(const BitcoinExchange &f);
     BitcoinExchange();
-    std::string removeWhitespaces(const std::string &str) const;
 
-public:
-    BitcoinExchange(const std::string &filename);
-    ~BitcoinExchange();
-
-    void    readData();
-    void    exchange() const;
-    
     class ExchangeException : public std::exception
     {
         private:
@@ -49,11 +44,17 @@ public:
             ExchangeException(std::string message): message(message){};
             virtual ~ExchangeException(){};
 
-            virtual const char *what() const throw()
-            {
+           virtual const char *what() const throw()
+           {
             return this->message.c_str();
            }
     };
+
+public:
+    BitcoinExchange(const std::string &dbname);
+    ~BitcoinExchange();
+    
+    void                            exchange(const std::string &filename) const;
 };
 
 #endif
