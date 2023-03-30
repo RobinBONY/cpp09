@@ -1,0 +1,8 @@
+# cpp09
+Le temps d'exécution d'un algorithme de tri dépend de la structure de données sous-jacente utilisée pour stocker les éléments à trier. Les vecteurs (std::vector) sont implémentés comme des tableaux contigus en mémoire, tandis que les listes chaînées (std::list) sont implémentées comme des chaînes d'éléments qui ne sont pas stockées de manière contiguë en mémoire.
+
+Lorsque vous triez un vecteur, les éléments sont stockés de manière contiguë en mémoire, ce qui permet un accès plus rapide aux éléments et une utilisation plus efficace du cache. En revanche, lors de l'utilisation d'une liste chaînée, les éléments ne sont pas stockés de manière contiguë en mémoire, ce qui entraîne un accès plus lent aux éléments et une utilisation moins efficace du cache. Cela signifie que l'opération de tri peut être plus lente lorsqu'elle est effectuée sur une liste chaînée que lorsqu'elle est effectuée sur un vecteur.
+
+De plus, les vecteurs offrent des fonctionnalités d'accès aléatoire efficaces, ce qui signifie que vous pouvez accéder rapidement à n'importe quel élément dans le tableau, tandis que les listes chaînées nécessitent des itérations sur les éléments pour atteindre un élément donné. Cela peut entraîner des performances plus lentes lors de l'exécution d'algorithmes de tri sur des listes chaînées.
+
+En fin de compte, le choix entre un vecteur et une liste chaînée pour stocker les éléments dépend de l'utilisation prévue de la structure de données. Les listes chaînées peuvent être utiles pour certaines opérations de manipulation des éléments, comme l'insertion ou la suppression en position intermédiaire, tandis que les vecteurs peuvent être plus efficaces pour des opérations d'accès aléatoire et de tri.
