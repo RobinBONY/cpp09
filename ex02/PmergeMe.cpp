@@ -110,14 +110,11 @@ void PmergeMe::vmerge_insert_sort(std::vector<int>& v) {
     if (v.size() <= 1) {
         return;
     }
-    // Diviser le vecteur en deux parties
     size_t middle = v.size() / 2;
     std::vector<int> left(v.begin(), v.begin() + middle);
     std::vector<int> right(v.begin() + middle, v.end());
-    // Trier les deux parties
     vmerge_insert_sort(left);
     vmerge_insert_sort(right);
-    // Fusionner les deux parties triées
     v.clear();
     vmerge(left, right, v);
 }
@@ -196,7 +193,6 @@ void PmergeMe::lmerge_insert_sort(std::list<int>& lst) {
     if (lst.size() <= 1) {
         return;
     }
-    // Diviser la liste en deux parties
     std::list<int> left, right;
     auto it = lst.begin();
     for (size_t i = 0; i < lst.size() / 2; i++) {
@@ -206,15 +202,8 @@ void PmergeMe::lmerge_insert_sort(std::list<int>& lst) {
     for (; it != lst.end(); it++) {
         right.push_back(*it);
     }
-    // Trier les deux parties
     lmerge_insert_sort(left);
     lmerge_insert_sort(right);
-    // Fusionner les deux parties triées
     lst.clear();
     lmerge(left, right, lst);
-}
-
-std::ostream& operator<<(std::ostream& os, const PmergeMe& merge) {
-  os << "PmergeMe" << std::endl;
-  return os;
 }

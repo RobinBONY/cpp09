@@ -157,8 +157,3 @@ char BitcoinExchange::findDelimiter(const std::string &line) const
     }
     return ',';
 }
-
-std::ostream& operator<<(std::ostream& os, const BitcoinExchange& btc) {
-  os << "BTC Exchange" << std::endl;
-  return os;
-}

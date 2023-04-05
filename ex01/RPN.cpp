@@ -117,8 +117,3 @@ bool RPN::checkToken(const std::string &str) const
   }
   return true;  
 }
-
-std::ostream& operator<<(std::ostream& os, const RPN& rpn) {
-  os << "RPN" << std::endl;
-  return os;
-}
