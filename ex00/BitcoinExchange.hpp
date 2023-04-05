@@ -15,6 +15,8 @@
 #include <sstream>
 #include <string>
 #include <map>
+#include <ctime>
+#include <cstring>
 
 #ifndef BITCOINEXCHANGE_HPP
 #define BITCOINEXCHANGE_HPP
@@ -31,6 +33,7 @@ private:
     void                            readData();
     std::string                     removeWhitespaces(const std::string &str) const;
     char                            findDelimiter(const std::string &line) const;
+    bool                            isValidDate(const std::string &date, const std::string &dateFormat) const;
 
     BitcoinExchange(const BitcoinExchange &f);
     BitcoinExchange &operator=(const BitcoinExchange &f);
@@ -56,5 +59,8 @@ public:
     
     void                            exchange(const std::string &filename) const;
 };
+
+
+std::ostream& operator<<(std::ostream& os, const BitcoinExchange& btc);
 
 #endif

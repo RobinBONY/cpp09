@@ -213,3 +213,8 @@ void PmergeMe::lmerge_insert_sort(std::list<int>& lst) {
     lst.clear();
     lmerge(left, right, lst);
 }
+
+std::ostream& operator<<(std::ostream& os, const PmergeMe& merge) {
+  os << "PmergeMe" << std::endl;
+  return os;
+}

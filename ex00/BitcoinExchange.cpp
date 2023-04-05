@@ -17,26 +17,19 @@ BitcoinExchange::BitcoinExchange(const std::string &dbname) : _dbname(dbname)
     readData();
 }
 
-BitcoinExchange::BitcoinExchange(const BitcoinExchange& ex) : _dbname(ex._dbname)
-{
-    this->_data = ex._data;
-}
-
-BitcoinExchange::~BitcoinExchange()
-{
-}
-
-BitcoinExchange&    BitcoinExchange::operator=(const BitcoinExchange& ex)
-{
-    if (this != &ex)
-    {
-        this->_data = ex._data;
+bool BitcoinExchange::isValidDate(const std::string &date, const std::string &dateFormat) const {
+    struct tm tm;
+    memset(&tm, 0, sizeof(struct tm));
+    if (strptime(date.c_str(), dateFormat.c_str(), &tm) == NULL) {
+        return false;
     }
-    return (*this);
+    return true;
 }
 
 void BitcoinExchange::readData()
 {
+    std::string dateFormat = "%Y-%m-%d";
+
     std::ifstream input(this->_dbname);
     if(!input.is_open())
     {
@@ -57,20 +50,27 @@ void BitcoinExchange::readData()
         date = removeWhitespaces(date);
         std::getline(ss, value, delim);
         value = removeWhitespaces(value);
-        try
+        if(isValidDate(date, dateFormat))
         {
-            fvalue = std::stof(value);
-            this->_data[date] = fvalue;
+            try
+            {
+                fvalue = std::stof(value);
+                this->_data[date] = fvalue;
+            }
+            catch(const std::exception& e)
+            {
+                std::cout << "Error: bad input => " << date << std::endl;
+            }
         }
-        catch(const std::exception& e)
-        {
-            std::cout << "Error: bad input => " << date << std::endl;
-        }
+        else
+            std::cout << "Error: bad date format"<< std::endl;
     }
 }
 
 void BitcoinExchange::exchange(const std::string &filename) const {
     
+    std::string dateFormat = "%Y-%m-%d";
+
     std::ifstream input(filename);
     if(!input.is_open())
     {
@@ -91,39 +91,47 @@ void BitcoinExchange::exchange(const std::string &filename) const {
         date = removeWhitespaces(date);
         std::getline(ss, value, delim);
         value = removeWhitespaces(value);
-        try
+        if(isValidDate(date, dateFormat))
         {
-            fvalue = std::stof(value);
-        }
-        catch(const std::exception& e)
-        {
-            std::cout << "Error: bad input => " << date << std::endl;
-        }
-        try
-        {
-            if (fvalue < 0)
+            try
             {
-                ExchangeException ex("Error: not a positive number.");
-                throw ex;
+                fvalue = std::stof(value);
             }
-            if (fvalue > 1000)
+            catch(const std::exception& e)
             {
-                ExchangeException ex("Error: too large a number.");
-                throw ex;
+                std::cout << "Error: bad input => " << date << std::endl;
             }
-            std::map<std::string, float>::const_iterator it = this->_data.lower_bound(date);
-            if (it != this->_data.end())
-                std::cout << date << " => " << fvalue << " = " << it->second * fvalue << std::endl;
-            else
+            try
             {
-                ExchangeException ex("Error: wrong date.");
-                throw ex;
+                if (fvalue < 0)
+                {
+                    ExchangeException ex("Error: not a positive number.");
+                    throw ex;
+                }
+                if (fvalue > 1000)
+                {
+                    ExchangeException ex("Error: too large a number.");
+                    throw ex;
+                }
+                std::map<std::string, float>::const_iterator it = this->_data.lower_bound(date);
+                if (it != this->_data.end() && it != this->_data.begin())
+                {
+                    it--;
+                    std::cout << date << " => " << fvalue << " = " << it->second * fvalue << std::endl;
+                }
+                else
+                {
+                    ExchangeException ex("Error: wrong date.");
+                    throw ex;
+                }
+            }
+            catch(const std::exception& e)
+            {
+                std::cerr << e.what() << '\n';
             }
         }
-        catch(const std::exception& e)
-        {
-            std::cerr << e.what() << '\n';
-        }
+        else
+            std::cout << "Error: bad date format"<< std::endl;
     }
     
     
@@ -148,4 +156,9 @@ char BitcoinExchange::findDelimiter(const std::string &line) const
             return line[i];
     }
     return ',';
+}
+
+std::ostream& operator<<(std::ostream& os, const BitcoinExchange& btc) {
+  os << "BTC Exchange" << std::endl;
+  return os;
 }

@@ -19,19 +19,23 @@
 #define RPN_HPP
 
 
-class ReversePolishNotation
+class RPN
 {
     private:
-        std::stack<int> tokens;
+        std::stack<long> tokens;
 
-        int checkToken(const std::string &str) const;
-        ReversePolishNotation(const ReversePolishNotation &f);
-        ReversePolishNotation &operator=(const ReversePolishNotation &f);
-        ReversePolishNotation();
+        bool checkToken(const std::string &str) const;
+        bool isOperator(const char c);
+        bool checkExpression(const char *str);
+        std::string removeWhitespaces(const std::string &str) const;
+
+        RPN(const RPN &f);
+        RPN &operator=(const RPN &f);
+        RPN();
 
     public:
-        ReversePolishNotation(std::string expression);
-        ~ReversePolishNotation();
+        RPN(std::string expression);
+        ~RPN();
     
     class OperationException : public std::exception
     {
@@ -47,5 +51,7 @@ class ReversePolishNotation
            }
     };
 };
+
+std::ostream& operator<<(std::ostream& os, const RPN& rpn);
 
 #endif
