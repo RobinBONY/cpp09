@@ -25,8 +25,9 @@ bool RPN::isOperator(const char c)
   return false;
 }
 
-bool RPN::checkExpression(const char *str)
+bool RPN::checkExpression(const std::string &expression)
 {
+  const char *str = removeWhitespaces(expression).c_str();
   long operatorCount = 0;
   long digitCount = 0;
 
@@ -39,7 +40,7 @@ bool RPN::checkExpression(const char *str)
     else
       return false;
   }
-  if (operatorCount = (digitCount - 1))
+  if (operatorCount == (digitCount - 1))
     return true;
   return false;
 }
@@ -48,7 +49,7 @@ RPN::RPN(std::string expression)
 {
   if (!checkExpression(expression.c_str()))
   {
-    OperationException ex("Expression Error");
+    OperationException ex("Error");
     throw ex;
   }
   std::string token;
@@ -62,30 +63,46 @@ RPN::RPN(std::string expression)
             this->tokens.push(digit);
         else
         {
+          if (digit < 100)
+          {
             this->tokens.push(digit / 10);
             this->tokens.push(digit % 10);
+          }
+          else
+          {
+            OperationException ex("Error");
+            throw ex;
+          }
         }
     } 
     else if(token == "+" || token == "-" || token == "*" || token == "/")
     {
-      int operand2 = this->tokens.top();
-      this->tokens.pop();
-      int operand1 = this->tokens.top();
-      this->tokens.pop();
+      if (this->tokens.size() == 2)
+      {
+        int operand2 = this->tokens.top();
+        this->tokens.pop();
+        int operand1 = this->tokens.top();
+        this->tokens.pop();
 
-      if (token == "+") {
-        this->tokens.push(operand1 + operand2);
-      } else if (token == "-") {
-        this->tokens.push(operand1 - operand2);
-      } else if (token == "*") {
-        this->tokens.push(operand1 * operand2);
-      } else if (token == "/") {
-        this->tokens.push(operand1 / operand2);
+        if (token == "+") {
+          this->tokens.push(operand1 + operand2);
+        } else if (token == "-") {
+          this->tokens.push(operand1 - operand2);
+        } else if (token == "*") {
+          this->tokens.push(operand1 * operand2);
+        } else if (token == "/") {
+          this->tokens.push(operand1 / operand2);
+        }
+      }
+      else
+      {
+        OperationException ex("Error");
+        throw ex;
       }
     }
     else
     {
-        OperationException ex("Operation Error");
+        OperationException ex("Error");
         throw ex;
     }
   }

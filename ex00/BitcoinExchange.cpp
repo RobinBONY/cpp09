@@ -12,6 +12,8 @@
 
 #include "BitcoinExchange.hpp"
 
+BitcoinExchange::~BitcoinExchange(){};
+
 BitcoinExchange::BitcoinExchange(const std::string &dbname) : _dbname(dbname)
 {
     readData();
@@ -96,38 +98,38 @@ void BitcoinExchange::exchange(const std::string &filename) const {
             try
             {
                 fvalue = std::stof(value);
+                try
+                {
+                    if (fvalue < 0)
+                    {
+                        ExchangeException ex("Error: not a positive number.");
+                        throw ex;
+                    }
+                    if (fvalue > 1000)
+                    {
+                        ExchangeException ex("Error: too large a number.");
+                        throw ex;
+                    }
+                    std::map<std::string, float>::const_iterator it = this->_data.lower_bound(date);
+                    if (it != this->_data.end() && it != this->_data.begin())
+                    {
+                        it--;
+                        std::cout << date << " => " << fvalue << " = " << it->second * fvalue << std::endl;
+                    }
+                    else
+                    {
+                        ExchangeException ex("Error: wrong date.");
+                        throw ex;
+                    }
+                }
+                catch(const std::exception& e)
+                {
+                    std::cerr << e.what() << '\n';
+                }
             }
             catch(const std::exception& e)
             {
                 std::cout << "Error: bad input => " << date << std::endl;
-            }
-            try
-            {
-                if (fvalue < 0)
-                {
-                    ExchangeException ex("Error: not a positive number.");
-                    throw ex;
-                }
-                if (fvalue > 1000)
-                {
-                    ExchangeException ex("Error: too large a number.");
-                    throw ex;
-                }
-                std::map<std::string, float>::const_iterator it = this->_data.lower_bound(date);
-                if (it != this->_data.end() && it != this->_data.begin())
-                {
-                    it--;
-                    std::cout << date << " => " << fvalue << " = " << it->second * fvalue << std::endl;
-                }
-                else
-                {
-                    ExchangeException ex("Error: wrong date.");
-                    throw ex;
-                }
-            }
-            catch(const std::exception& e)
-            {
-                std::cerr << e.what() << '\n';
             }
         }
         else

@@ -26,7 +26,7 @@ class RPN
 
         bool checkToken(const std::string &str) const;
         bool isOperator(const char c);
-        bool checkExpression(const char *str);
+        bool checkExpression(const std::string &expression);
         std::string removeWhitespaces(const std::string &str) const;
 
         RPN(const RPN &f);
