@@ -32,7 +32,7 @@ void BitcoinExchange::readData()
 {
     std::string dateFormat = "%Y-%m-%d";
 
-    std::ifstream input(this->_dbname);
+    std::ifstream input(this->_dbname.c_str());
     if(!input.is_open())
     {
         ExchangeException ex("Could not open file");
@@ -56,7 +56,7 @@ void BitcoinExchange::readData()
         {
             try
             {
-                fvalue = std::stof(value);
+                fvalue = std::atof(value.c_str());
                 this->_data[date] = fvalue;
             }
             catch(const std::exception& e)
@@ -73,7 +73,7 @@ void BitcoinExchange::exchange(const std::string &filename) const {
     
     std::string dateFormat = "%Y-%m-%d";
 
-    std::ifstream input(filename);
+    std::ifstream input(filename.c_str());
     if(!input.is_open())
     {
         ExchangeException ex("Could not open file");
@@ -97,7 +97,7 @@ void BitcoinExchange::exchange(const std::string &filename) const {
         {
             try
             {
-                fvalue = std::stof(value);
+                fvalue = std::atof(value.c_str());
                 try
                 {
                     if (fvalue < 0)

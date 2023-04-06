@@ -59,7 +59,7 @@ void PmergeMe::sortVector(int argc, char **argv)
     {
         int tmp;
         for (int i = 1; i < argc; i++) {
-            tmp = std::stoi(argv[i]);
+            tmp = atoi(argv[i]);
             if (tmp >= 0)
                 vector.push_back(tmp);
             else
@@ -141,7 +141,7 @@ void PmergeMe::sortList(int argc, char **argv)
     {
         int tmp;
         for (int i = 1; i < argc; i++) {
-            tmp = std::stoi(argv[i]);
+            tmp = atoi(argv[i]);
             if (tmp >= 0)
                 list.push_back(tmp);
             else
@@ -168,8 +168,8 @@ void PmergeMe::sortList(int argc, char **argv)
 }
 
 void PmergeMe::lmerge(std::list<int>& left, std::list<int>& right, std::list<int>& result) {
-    auto it_left = left.begin();
-    auto it_right = right.begin();
+    std::list<int>::iterator it_left = left.begin();
+    std::list<int>::iterator it_right = right.begin();
     while (it_left != left.end() && it_right != right.end()) {
         if (*it_left < *it_right) {
             result.push_back(*it_left);
@@ -194,7 +194,7 @@ void PmergeMe::lmerge_insert_sort(std::list<int>& lst) {
         return;
     }
     std::list<int> left, right;
-    auto it = lst.begin();
+    std::list<int>::iterator it = lst.begin();
     for (size_t i = 0; i < lst.size() / 2; i++) {
         left.push_back(*it);
         it++;

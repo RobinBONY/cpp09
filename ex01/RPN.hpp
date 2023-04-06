@@ -14,6 +14,7 @@
 #include <stack>
 #include <string>
 #include <sstream>
+#include <cstdlib>
 
 #ifndef RPN_HPP
 #define RPN_HPP
@@ -43,7 +44,7 @@ class RPN
             const std::string message;
         public:
             OperationException(std::string message): message(message){};
-            virtual ~OperationException(){};
+            virtual ~OperationException() throw(){};
 
             virtual const char *what() const throw()
             {

@@ -58,7 +58,7 @@ RPN::RPN(std::string expression)
   while (std::getline(ss, token, ' ')) {
     if (checkToken(token)) 
     {
-        int digit = std::stoi(token);
+        int digit = atoi(token.c_str());
         if (digit < 10)
             this->tokens.push(digit);
         else

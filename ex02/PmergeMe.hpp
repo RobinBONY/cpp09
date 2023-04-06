@@ -14,6 +14,7 @@
 #include <vector>
 #include <list>
 #include <ctime>
+#include <cstdlib>
 
 #ifndef PMERGEME_HPP
 #define PMERGEME_HPP
@@ -48,7 +49,7 @@ class PmergeMe
             const std::string message;
         public:
             OperationException(std::string message): message(message){};
-            virtual ~OperationException(){};
+            virtual ~OperationException() throw(){};
 
             virtual const char *what() const throw()
             {

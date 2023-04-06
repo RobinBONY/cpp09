@@ -17,6 +17,7 @@
 #include <map>
 #include <ctime>
 #include <cstring>
+#include <cstdlib>
 
 #ifndef BITCOINEXCHANGE_HPP
 #define BITCOINEXCHANGE_HPP
@@ -45,7 +46,7 @@ private:
             const std::string message;
         public:
             ExchangeException(std::string message): message(message){};
-            virtual ~ExchangeException(){};
+            virtual ~ExchangeException() throw() {};
 
            virtual const char *what() const throw()
            {
