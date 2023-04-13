@@ -59,6 +59,7 @@ public:
     ~BitcoinExchange();
     
     void                            exchange(const std::string &filename) const;
+    std::map<std::string, float>    getData();
 };
 
 

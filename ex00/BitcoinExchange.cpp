@@ -19,10 +19,15 @@ BitcoinExchange::BitcoinExchange(const std::string &dbname) : _dbname(dbname)
     readData();
 }
 
+std::map<std::string, float>    BitcoinExchange::getData()
+{
+    return this->_data;
+}
+
 bool BitcoinExchange::isValidDate(const std::string &date, const std::string &dateFormat) const {
     struct tm tm;
     memset(&tm, 0, sizeof(struct tm));
-    if (strptime(date.c_str(), dateFormat.c_str(), &tm) == NULL) {
+    if (date.size() != 10 || strptime(date.c_str(), dateFormat.c_str(), &tm) == NULL) {
         return false;
     }
     return true;
@@ -93,43 +98,53 @@ void BitcoinExchange::exchange(const std::string &filename) const {
         date = removeWhitespaces(date);
         std::getline(ss, value, delim);
         value = removeWhitespaces(value);
+        try
+        {
+            if (value.c_str()[0] == '\0')
+            {
+                ExchangeException ex("");
+                throw ex;
+            }
+            fvalue = std::atof(value.c_str());
+        }
+        catch(const std::exception& e)
+        {
+            std::cout << "Error: bad input => " << date << std::endl;
+            continue;
+        }
         if(isValidDate(date, dateFormat))
         {
             try
             {
-                fvalue = std::atof(value.c_str());
-                try
+                if (fvalue < 0)
                 {
-                    if (fvalue < 0)
-                    {
-                        ExchangeException ex("Error: not a positive number.");
-                        throw ex;
-                    }
-                    if (fvalue > 1000)
-                    {
-                        ExchangeException ex("Error: too large a number.");
-                        throw ex;
-                    }
-                    std::map<std::string, float>::const_iterator it = this->_data.lower_bound(date);
-                    if (it != this->_data.end() && it != this->_data.begin())
-                    {
-                        it--;
-                        std::cout << date << " => " << fvalue << " = " << it->second * fvalue << std::endl;
-                    }
+                    ExchangeException ex("Error: not a positive number.");
+                    throw ex;
+                }
+                if (fvalue > 1000)
+                {
+                    ExchangeException ex("Error: too large a number.");
+                    throw ex;
+                }
+                std::map<std::string, float>::const_iterator it = this->_data.lower_bound(date);
+                if (it != this->_data.end())
+                {
+                    std::cout << date << " => " << fvalue << " = " << it->second * fvalue << std::endl;
+                }
+                else
+                {
+                    if (date > this->_data.rbegin()->first)
+                        std::cout << date << " => " << fvalue << " = " << this->_data.rbegin()->second * fvalue << std::endl;
                     else
                     {
                         ExchangeException ex("Error: wrong date.");
                         throw ex;
                     }
                 }
-                catch(const std::exception& e)
-                {
-                    std::cerr << e.what() << '\n';
-                }
             }
             catch(const std::exception& e)
             {
-                std::cout << "Error: bad input => " << date << std::endl;
+                std::cerr << e.what() << '\n';
             }
         }
         else
