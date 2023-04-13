@@ -25,22 +25,24 @@ bool RPN::isoperator(const char c)
 	return false;
 }
 
-std::string RPN::removeWhitespaces(const std::string &str) const
-{
-	std::string newStr = "";
-	for (std::string::const_iterator it = str.begin(); it != str.end(); it++)
-	{
-		if (!std::isspace(*it))
-			newStr += *it;
-	}
-	return newStr;
+const char* RPN::removeWhitespaces(const char* str) const {
+    std::string result;
+    while (*str) {
+        if (!isspace(*str)) {
+            result += *str;
+        }
+        str++;
+    }
+    char* newStr = new char[result.length() + 1];
+    strcpy(newStr, result.c_str());
+    return newStr;
 }
 
-RPN::RPN(std::string expression)
+RPN::RPN(const char *expression)
 {
-	const char *str = removeWhitespaces(expression).c_str();
+	const char *str = removeWhitespaces(expression);
 
-	for (size_t i = 0; i < expression.length(); i++)
+	for (size_t i = 0; str[i]; i++)
 	{
 		if (isdigit(str[i]))
 		{

@@ -14,6 +14,7 @@
 #include <stack>
 #include <string>
 #include <cstdlib>
+#include <cstring>
 
 #ifndef RPN_HPP
 #define RPN_HPP
@@ -24,14 +25,14 @@ private:
 	std::stack<long> tokens;
 
 	bool isoperator(const char c);
-	std::string removeWhitespaces(const std::string &str) const;
+	const char * removeWhitespaces(const char *str) const;
 
 	RPN(const RPN &f);
 	RPN &operator=(const RPN &f);
 	RPN();
 
 public:
-	RPN(std::string expression);
+	RPN(const char *str);
 	~RPN();
 
 	class OperationException : public std::exception
