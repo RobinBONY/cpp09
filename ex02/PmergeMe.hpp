@@ -30,12 +30,10 @@ private:
 	template <typename T>
 	void display(const T &container) const;
 
-	void mergeInsertSortVector(std::vector<int> &container);
-
 	template <typename T>
 	void mergeSort(typename T::iterator &begin, typename T::iterator &end);
 	template <typename T>
-	void insertSort(typename T::iterator &begin, typename T::iterator &end);
+	void PmergeMe::insertSort(T &container)
 
 	PmergeMe(const PmergeMe &f);
 	PmergeMe &operator=(const PmergeMe &f);

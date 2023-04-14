@@ -37,13 +37,6 @@ PmergeMe::PmergeMe(int argc, char **argv)
 
 	std::cout << "Time to process a range of " << vector.size() << " elements with std::vector : " << duration << " us" << std::endl;
 	*/
-	std::vector<int> vec(5);
-	vec.push_back(5);
-	vec.push_back(4);
-	vec.push_back(3);
-	vec.push_back(2);
-	vec.push_back(1);
-	mergeInsertSortVector(vec);
 }
 
 PmergeMe::~PmergeMe()
@@ -67,17 +60,6 @@ void PmergeMe::display(const T &container) const
 	std::cout << std::endl;
 }
 
-void PmergeMe::mergeInsertSortVector(std::vector<int> &container)
-{
-	std::vector<int>::iterator begin = container.begin();
-	std::vector<int>::iterator end = container.end();
-	mergeSort<std::vector<int> >(begin, end);
-	for (std::vector<int>::iterator it = container.begin(); it != container.end(); it++)
-	{
-		std::cout << *it << std::endl;
-	}
-}
-
 template <typename T>
 void PmergeMe::mergeSort(typename T::iterator &begin, typename T::iterator &end)
 {
@@ -93,14 +75,15 @@ void PmergeMe::mergeSort(typename T::iterator &begin, typename T::iterator &end)
 }
 
 template <typename T>
-void PmergeMe::insertSort(typename T::iterator &begin, typename T::iterator &end)
+void PmergeMe::insertSort(T &container)
 {
-	for (typename T::iterator it = begin + 1; it != end; it++)
-	{
-		for (typename T::iterator jt = begin; jt != end; jt++)
-		{
-			if (*it < *jt)
-				std::swap(*it, *jt);
-		}
-	}
+	for (typename T::iterator it = container.begin(); it != container.end(); it++) {
+        typename T::iterator jt = it - 1;
+        int temp = *it;
+        while (jt >= container.rend() && *jt > temp) {
+            *(jt + 1) = *jt;
+            jt--;
+        }
+        *(jt + 1) = temp;
+    }
 }
