@@ -19,45 +19,48 @@
 #ifndef PMERGEME_HPP
 #define PMERGEME_HPP
 
-
 class PmergeMe
 {
-    private:
-        std::vector<int> vector;
-        void displayVector();
-        void vmerge(std::vector<int>& left, std::vector<int>& right, std::vector<int>& result);
-        void vmerge_insert_sort(std::vector<int>& v);
-        void sortVector(int argc, char **argv);
-        
-        std::list<int> list;
-        void displayList();
-        void lmerge(std::list<int>& left, std::list<int>& right, std::list<int>& result);
-        void lmerge_insert_sort(std::list<int>& lst);
-        void sortList(int argc, char **argv);
+private:
+	std::vector<int> _vector;
+	double _vduration;
+	std::list<int> _list;
+	double _lduration;
 
-        PmergeMe(const PmergeMe &f);
-        PmergeMe &operator=(const PmergeMe &f);
-        PmergeMe();
+	template <typename T>
+	void display(const T &container) const;
 
-    public:
-        PmergeMe(int argc, char** argv);
-        ~PmergeMe();
-    
-    class OperationException : public std::exception
-    {
-        private:
-            const std::string message;
-        public:
-            OperationException(std::string message): message(message){};
-            virtual ~OperationException() throw(){};
+	void mergeInsertSortVector(std::vector<int> &container);
 
-            virtual const char *what() const throw()
-            {
-            return this->message.c_str();
-           }
-    };
+	template <typename T>
+	void mergeSort(typename T::iterator &begin, typename T::iterator &end);
+	template <typename T>
+	void insertSort(typename T::iterator &begin, typename T::iterator &end);
+
+	PmergeMe(const PmergeMe &f);
+	PmergeMe &operator=(const PmergeMe &f);
+	PmergeMe();
+
+public:
+	PmergeMe(int argc, char **argv);
+	~PmergeMe();
+
+	class OperationException : public std::exception
+	{
+	private:
+		const std::string message;
+
+	public:
+		OperationException(std::string message) : message(message){};
+		virtual ~OperationException() throw(){};
+
+		virtual const char *what() const throw()
+		{
+			return this->message.c_str();
+		}
+	};
 };
 
-std::ostream& operator<<(std::ostream& os, const PmergeMe& merge);
+std::ostream &operator<<(std::ostream &os, const PmergeMe &merge);
 
 #endif

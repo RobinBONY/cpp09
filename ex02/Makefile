@@ -20,7 +20,7 @@ HEADERS = PmergeMe.hpp
 CC = c++
 RM = rm -f
 
-FLAGS = -Wall -Wextra -Werror -std=c++98
+FLAGS = -Wall -Wextra -Werror -std=c++98 -fsanitize=address
 
 OBJS = ${SRCS:.cpp=.o}
 

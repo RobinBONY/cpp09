@@ -25,7 +25,7 @@ private:
 	std::stack<long> tokens;
 
 	bool isoperator(const char c);
-	const char * removeWhitespaces(const char *str) const;
+	const char *removeWhitespaces(const char *str) const;
 
 	RPN(const RPN &f);
 	RPN &operator=(const RPN &f);

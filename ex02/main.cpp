@@ -14,11 +14,11 @@
 
 int main(int argc, char**argv)
 {
-  if(argc < 2)
+  /*if(argc < 2 || argv[1][0] == '\0')
   {
-    std::cout << "Usage: " << argv[0] << " <expression>" << std::endl;
+    std::cout << "Usage: " << argv[0] << " <args>" << std::endl;
     return (1);
-  }
+  }*/
 
   try
   {

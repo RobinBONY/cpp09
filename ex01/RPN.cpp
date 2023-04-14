@@ -25,17 +25,20 @@ bool RPN::isoperator(const char c)
 	return false;
 }
 
-const char* RPN::removeWhitespaces(const char* str) const {
-    std::string result;
-    while (*str) {
-        if (!isspace(*str)) {
-            result += *str;
-        }
-        str++;
-    }
-    char* newStr = new char[result.length() + 1];
-    strcpy(newStr, result.c_str());
-    return newStr;
+const char *RPN::removeWhitespaces(const char *str) const
+{
+	std::string result;
+	while (*str)
+	{
+		if (!isspace(*str))
+		{
+			result += *str;
+		}
+		str++;
+	}
+	char *newStr = new char[result.length() + 1];
+	strcpy(newStr, result.c_str());
+	return newStr;
 }
 
 RPN::RPN(const char *expression)
@@ -92,7 +95,7 @@ RPN::RPN(const char *expression)
 			throw ex;
 		}
 	}
-	if (this->tokens.size() > 1)
+	if (this->tokens.size() != 1)
 	{
 		OperationException ex("Error");
 		throw ex;
