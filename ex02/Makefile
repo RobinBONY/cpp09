@@ -6,7 +6,7 @@
 #    By: rbony <rbony@corobizar.com>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/15 19:10:43 by rbony             #+#    #+#              #
-#    Updated: 2023/03/18 13:51:23 by rbony            ###   ########lyon.fr    #
+#    Updated: 2023/04/16 18:20:15 by rbony            ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ HEADERS = PmergeMe.hpp
 CC = c++
 RM = rm -f
 
-FLAGS = -Wall -Wextra -Werror -std=c++98 -fsanitize=address
+FLAGS = -Wall -Wextra -Werror -std=c++98
 
 OBJS = ${SRCS:.cpp=.o}
 

@@ -6,7 +6,7 @@
 /*   By: rbony <rbony@corobizar.com>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/18 13:53:02 by rbony             #+#    #+#             */
-/*   Updated: 2023/03/19 17:01:01 by rbony            ###   ########lyon.fr   */
+/*   Updated: 2023/04/16 18:15:44 by rbony            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,17 +23,24 @@ class PmergeMe
 {
 private:
 	std::vector<int> _vector;
+	std::vector<int> _vectorBefore;
 	double _vduration;
 	std::list<int> _list;
+	std::list<int> _listBefore;
 	double _lduration;
 
 	template <typename T>
-	void display(const T &container) const;
+	void sort(int argc, char **argv, T &container, T &containerBefore);
+
 
 	template <typename T>
-	void mergeSort(typename T::iterator &begin, typename T::iterator &end);
+	void mergeSort(T &container);
+
 	template <typename T>
-	void PmergeMe::insertSort(T &container)
+	void mergeInsert(T &container, T &left, T &right);
+
+	template <typename T>
+	void insert(T &container, int i);
 
 	PmergeMe(const PmergeMe &f);
 	PmergeMe &operator=(const PmergeMe &f);
@@ -42,6 +49,14 @@ private:
 public:
 	PmergeMe(int argc, char **argv);
 	~PmergeMe();
+	
+	const std::vector<int> &getVector() const;
+	const std::vector<int> &getVectorBefore() const;
+	const std::list<int> &getList() const;
+	const std::list<int> &getListBefore() const;
+
+	double getVDuration() const;
+	double getLDuration() const;
 
 	class OperationException : public std::exception
 	{
@@ -58,6 +73,9 @@ public:
 		}
 	};
 };
+
+template <typename T>
+void display(std::ostream &os, T &container, const std::string &comment);
 
 std::ostream &operator<<(std::ostream &os, const PmergeMe &merge);
 
