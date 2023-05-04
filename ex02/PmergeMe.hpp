@@ -23,24 +23,22 @@ class PmergeMe
 {
 private:
 	std::vector<int> _vector;
-	std::vector<int> _vectorBefore;
 	double _vduration;
+
 	std::list<int> _list;
-	std::list<int> _listBefore;
 	double _lduration;
 
-	template <typename T>
-	void sort(int argc, char **argv, T &container, T &containerBefore);
+	void sortList(int argc, char **argv);
+	void insertList(std::list<int> &container, int i);
+	void mergeInsertList(std::list<int> &container, std::list<int> &left, std::list<int> &right);
+	void insertSortList(std::list<int> &list);
+	void mergeSortList(std::list<int> &list);
 
-
-	template <typename T>
-	void mergeSort(T &container);
-
-	template <typename T>
-	void mergeInsert(T &container, T &left, T &right);
-
-	template <typename T>
-	void insert(T &container, int i);
+	void sortVector(int argc, char **argv);
+	void insertVector(std::vector<int> &vector, int tmp);
+	void mergeInsertVector(std::vector<int> &vector, std::vector<int> &left, std::vector<int> &right);
+	void insertSortVector(std::vector<int> &vector);
+	void mergeSortVector(std::vector<int> &vector);
 
 	PmergeMe(const PmergeMe &f);
 	PmergeMe &operator=(const PmergeMe &f);
@@ -49,14 +47,6 @@ private:
 public:
 	PmergeMe(int argc, char **argv);
 	~PmergeMe();
-	
-	const std::vector<int> &getVector() const;
-	const std::vector<int> &getVectorBefore() const;
-	const std::list<int> &getList() const;
-	const std::list<int> &getListBefore() const;
-
-	double getVDuration() const;
-	double getLDuration() const;
 
 	class OperationException : public std::exception
 	{
@@ -73,10 +63,5 @@ public:
 		}
 	};
 };
-
-template <typename T>
-void display(std::ostream &os, T &container, const std::string &comment);
-
-std::ostream &operator<<(std::ostream &os, const PmergeMe &merge);
 
 #endif

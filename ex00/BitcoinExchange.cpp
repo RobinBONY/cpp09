@@ -19,15 +19,17 @@ BitcoinExchange::BitcoinExchange(const std::string &dbname) : _dbname(dbname)
     readData();
 }
 
-std::map<std::string, float>    BitcoinExchange::getData()
+std::map<std::string, float> BitcoinExchange::getData()
 {
     return this->_data;
 }
 
-bool BitcoinExchange::isValidDate(const std::string &date, const std::string &dateFormat) const {
-    struct tm tm;
-    memset(&tm, 0, sizeof(struct tm));
-    if (date.size() != 10 || strptime(date.c_str(), dateFormat.c_str(), &tm) == NULL) {
+bool BitcoinExchange::isValidDate(const std::string &date) const
+{
+    std::tm tm;
+    std::sscanf(date.c_str(), "%d-%d-%d", &tm.tm_year, &tm.tm_mon, &tm.tm_mday);
+    if (date.size() != 10 && tm.tm_mon <= 12 && tm.tm_mday <= 31)
+    {
         return false;
     }
     return true;
@@ -35,20 +37,25 @@ bool BitcoinExchange::isValidDate(const std::string &date, const std::string &da
 
 void BitcoinExchange::readData()
 {
-    std::string dateFormat = "%Y-%m-%d";
-
     std::ifstream input(this->_dbname.c_str());
-    if(!input.is_open())
+    if (!input.is_open())
     {
         ExchangeException ex("Could not open file");
         throw ex;
     }
-    
+
     std::string line;
-    std::getline(input,line);
-    char delim = findDelimiter(line);
+    char delim;
+    std::getline(input, line);
+    if (!line.empty())
+        delim = findDelimiter(line);
+    else
+    {
+        ExchangeException ex("Empty csv file");
+        throw ex;
+    }
     float fvalue;
-    while (std::getline(input,line))
+    while (std::getline(input, line))
     {
         std::stringstream ss(line);
         std::string date, value;
@@ -57,39 +64,37 @@ void BitcoinExchange::readData()
         date = removeWhitespaces(date);
         std::getline(ss, value, delim);
         value = removeWhitespaces(value);
-        if(isValidDate(date, dateFormat))
+        if (isValidDate(date))
         {
             try
             {
                 fvalue = std::atof(value.c_str());
                 this->_data[date] = fvalue;
             }
-            catch(const std::exception& e)
+            catch (const std::exception &e)
             {
                 std::cout << "Error: bad input => " << date << std::endl;
             }
         }
         else
-            std::cout << "Error: bad date format"<< std::endl;
+            std::cout << "Error: bad date format" << std::endl;
     }
 }
 
-void BitcoinExchange::exchange(const std::string &filename) const {
-    
-    std::string dateFormat = "%Y-%m-%d";
-
+void BitcoinExchange::exchange(const std::string &filename) const
+{
     std::ifstream input(filename.c_str());
-    if(!input.is_open())
+    if (!input.is_open())
     {
         ExchangeException ex("Could not open file");
         throw ex;
     }
-    
+
     std::string line;
-    std::getline(input,line);
+    std::getline(input, line);
     char delim = findDelimiter(line);
     float fvalue;
-    while (std::getline(input,line))
+    while (std::getline(input, line))
     {
         std::stringstream ss(line);
         std::string date, value;
@@ -107,12 +112,12 @@ void BitcoinExchange::exchange(const std::string &filename) const {
             }
             fvalue = std::atof(value.c_str());
         }
-        catch(const std::exception& e)
+        catch (const std::exception &e)
         {
             std::cout << "Error: bad input => " << date << std::endl;
             continue;
         }
-        if(isValidDate(date, dateFormat))
+        if (isValidDate(date))
         {
             try
             {
@@ -127,8 +132,13 @@ void BitcoinExchange::exchange(const std::string &filename) const {
                     throw ex;
                 }
                 std::map<std::string, float>::const_iterator it = this->_data.lower_bound(date);
-                if (it != this->_data.end())
+                if (it != this->_data.end() && it->first == date)
                 {
+                    std::cout << date << " => " << fvalue << " = " << it->second * fvalue << std::endl;
+                }
+                else if (it != this->_data.end())
+                {
+                    it--;
                     std::cout << date << " => " << fvalue << " = " << it->second * fvalue << std::endl;
                 }
                 else
@@ -142,16 +152,14 @@ void BitcoinExchange::exchange(const std::string &filename) const {
                     }
                 }
             }
-            catch(const std::exception& e)
+            catch (const std::exception &e)
             {
                 std::cerr << e.what() << '\n';
             }
         }
         else
-            std::cout << "Error: bad date format"<< std::endl;
+            std::cout << "Error: bad date format" << std::endl;
     }
-    
-    
 }
 
 std::string BitcoinExchange::removeWhitespaces(const std::string &str) const
@@ -159,7 +167,7 @@ std::string BitcoinExchange::removeWhitespaces(const std::string &str) const
     std::string newStr = "";
     for (std::string::const_iterator it = str.begin(); it != str.end(); it++)
     {
-        if(!std::isspace(*it))
+        if (!std::isspace(*it))
             newStr += *it;
     }
     return newStr;

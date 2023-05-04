@@ -78,6 +78,7 @@ RPN::RPN(const char *expression)
 					if (operand2 == 0)
 					{
 						OperationException ex("Error");
+						delete (str);
 						throw ex;
 					}
 					this->tokens.push(operand1 / operand2);
@@ -86,21 +87,25 @@ RPN::RPN(const char *expression)
 			else
 			{
 				OperationException ex("Error");
+				delete (str);
 				throw ex;
 			}
 		}
 		else
 		{
 			OperationException ex("Error");
+			delete (str);
 			throw ex;
 		}
 	}
 	if (this->tokens.size() != 1)
 	{
 		OperationException ex("Error");
+		delete (str);
 		throw ex;
 	}
 	std::cout << this->tokens.top() << std::endl;
+	delete (str);
 }
 
 RPN::~RPN()

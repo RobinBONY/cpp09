@@ -14,24 +14,67 @@
 
 PmergeMe::PmergeMe(int argc, char **argv)
 {
+
 	clock_t start, end;
 	start = clock();
-	sort<std::list<int> >(argc, argv, this->_list, this->_listBefore);
+	sortList(argc, argv);
 	end = clock();
 	_lduration = (double)(end - start) / CLOCKS_PER_SEC * 1000000;
 
 	start = clock();
-	sort<std::vector<int> >(argc, argv, this->_vector, this->_vectorBefore);
+	sortVector(argc, argv);
 	end = clock();
 	_vduration = (double)(end - start) / CLOCKS_PER_SEC * 1000000;
+
+	std::cout << "Before: ";
+	for (int i = 1; i < argc; i++)
+	{
+		if (i > 5)
+		{
+			std::cout << "[...]";
+			break;
+		}
+		std::cout << argv[i] << " ";
+	}
+	std::cout << std::endl;
+
+	std::cout << "List after: ";
+	int j = 0;
+	for (std::list<int>::iterator it = this->_list.begin(); it != this->_list.end(); it++)
+	{
+		if (j > 4)
+		{
+			std::cout << "[...]";
+			break;
+		}
+		std::cout << *it << " ";
+		j++;
+	}
+	std::cout << std::endl;
+
+	std::cout << "Vector after: ";
+	for (size_t i = 0; i < this->_vector.size(); i++)
+	{
+		if (i > 4)
+		{
+			std::cout << "[...]";
+			break;
+		}
+		std::cout << this->_vector[i] << " ";
+	}
+	std::cout << std::endl;
+
+	std::cout << "Time to process a range of " << this->_list.size() << " elements with std::list : " << this->_lduration << std::endl;
+	std::cout << "Time to process a range of " << this->_vector.size() << " elements with std::vector : " << this->_vduration << std::endl;
 }
 
 PmergeMe::~PmergeMe()
 {
 }
 
-template <typename T>
-void PmergeMe::sort(int argc, char **argv, T &container, T &containerBefore)
+/*------------------List--------------------*/
+
+void PmergeMe::sortList(int argc, char **argv)
 {
 	int tmp;
 	for (int i = 1; i < argc; i++)
@@ -42,38 +85,28 @@ void PmergeMe::sort(int argc, char **argv, T &container, T &containerBefore)
 			OperationException ex("Error");
 			throw ex;
 		}
-		container.push_back(tmp);
+		this->_list.push_back(tmp);
 	}
-	containerBefore = container;
-	mergeSort<T >(container);
+	mergeSortList(this->_list);
 }
 
-template <typename T>
-void PmergeMe::mergeSort(T &container)
+void PmergeMe::mergeSortList(std::list<int> &list)
 {
-	if (container.size() > 2)
+	if (list.size() > 100)
 	{
-		typename T::iterator middle = container.begin();
-		std::advance(middle, std::distance(container.begin(), container.end()) / 2);
-		T left(container.begin(), middle);
-		mergeSort<T >(left);
-		T right(middle, container.end());
-		mergeSort<T >(right);
-		mergeInsert<T >(container, left, right);
+		std::list<int>::iterator middle = list.begin();
+		std::advance(middle, std::distance(list.begin(), list.end()) / 2);
+		std::list<int> left(list.begin(), middle);
+		mergeSortList(left);
+		std::list<int> right(middle, list.end());
+		mergeSortList(right);
+		mergeInsertList(list, left, right);
 	}
-	else if (container.size() == 2)
-	{
-		typename T::iterator itr = container.begin();
-		typename T::iterator nextItr = itr;
-		nextItr++;
-
-		if (*nextItr < *itr)
-			std::swap(*nextItr, *itr);
-	}
+	else
+		insertSortList(list);
 }
 
-template <typename T>
-void PmergeMe::mergeInsert(T &container, T &left, T &right)
+void PmergeMe::mergeInsertList(std::list<int> &container, std::list<int> &left, std::list<int> &right)
 {
 	int i;
 	container.clear();
@@ -83,95 +116,138 @@ void PmergeMe::mergeInsert(T &container, T &left, T &right)
 		{
 			i = *left.begin();
 			left.erase(left.begin());
-			insert<T >(container, i);
+			insertList(container, i);
 		}
 		else
 		{
 			i = *right.begin();
 			right.erase(right.begin());
-			insert<T >(container, i);
+			insertList(container, i);
 		}
 	}
 	while (left.size() > 0)
 	{
 		i = *left.begin();
 		left.erase(left.begin());
-		insert<T >(container, i);
+		insertList(container, i);
 	}
 	while (right.size() > 0)
 	{
 		i = *right.begin();
 		right.erase(right.begin());
-		insert<T >(container, i);
+		insertList(container, i);
 	}
 }
 
-template <typename T>
-void PmergeMe::insert(T &container, int i)
+void PmergeMe::insertList(std::list<int> &container, int i)
 {
-	typename T::iterator it = container.begin();
+	std::list<int>::iterator it = container.begin();
 	while (it != container.end() && *it < i)
 		it++;
 	container.insert(it, i);
 }
 
-const std::vector<int> &PmergeMe::getVector() const
+void PmergeMe::insertSortList(std::list<int> &list)
 {
-	return this->_vector;
-}
-
-const std::vector<int> &PmergeMe::getVectorBefore() const
-{
-	return this->_vectorBefore;
-}
-
-const std::list<int> &PmergeMe::getList() const
-{
-	return this->_list;
-}
-
-const std::list<int> &PmergeMe::getListBefore() const
-{
-	return this->_listBefore;
-}
-
-double PmergeMe::getVDuration() const
-{
-	return this->_vduration;
-}
-
-double PmergeMe::getLDuration() const
-{
-	return this->_lduration;
-}
-
-std::ostream &operator<<(std::ostream &os, const PmergeMe &merge)
-{
-	std::list<int> l = merge.getList();
-	std::vector<int> v = merge.getVector();
-	display(os, merge.getListBefore(), "List before: ");
-	display(os, l, "List after: ");
-	display(os, merge.getVectorBefore(), "Vector before: ");
-	display(os, v, "Vector after: ");
-	os << "Time to process a range of " << l.size() << " elements with std::list : " << merge.getLDuration() << " us" << std::endl;
-	os << "Time to process a range of " << v.size() << " elements with std::vector : " << merge.getVDuration() << " us" << std::endl;
-	return os;
-}
-
-template <typename T>
-void display(std::ostream &os, T &container, const std::string &comment)
-{
-	int i = 0;
-	os << comment;
-	for (typename T::const_iterator it = container.begin(); it != container.end(); it++)
+	std::list<int>::iterator it, rit, tmpit;
+	int tmp;
+	for (it = list.begin(); it != list.end(); it++)
 	{
-		if (i > 3)
+		tmp = *it;
+		for (rit = it; rit != list.begin() && tmp <= *rit; rit--)
 		{
-			os << "[...]";
-			break;
+			tmpit = rit;
+			tmpit--;
+			std::swap(*rit, *tmpit);
 		}
-		os << *it << "   ";
-		i++;
 	}
-	os << std::endl;
+}
+
+/*------------------Vector------------------*/
+
+void PmergeMe::sortVector(int argc, char **argv)
+{
+	int tmp;
+	for (int i = 1; i < argc; i++)
+	{
+		tmp = std::atoi(argv[i]);
+		if (tmp < 0)
+		{
+			OperationException ex("Error");
+			throw ex;
+		}
+		this->_vector.push_back(tmp);
+	}
+	mergeSortVector(this->_vector);
+}
+
+void PmergeMe::insertVector(std::vector<int> &vector, int tmp)
+{
+	size_t i = 0;
+	while (i < vector.size() && vector[i] < tmp)
+		i++;
+	vector.insert(vector.begin() + i, tmp);
+}
+
+void PmergeMe::mergeInsertVector(std::vector<int> &vector, std::vector<int> &left, std::vector<int> &right)
+{
+	int tmp;
+	vector.clear();
+	while (left.size() > 0 && right.size() > 0)
+	{
+		if (left[0] < right[0])
+		{
+			tmp = left[0];
+			left.erase(left.begin());
+			insertVector(vector, tmp);
+		}
+		else
+		{
+			tmp = right[0];
+			right.erase(right.begin());
+			insertVector(vector, tmp);
+		}
+	}
+	while (left.size() > 0)
+	{
+		tmp = left[0];
+		left.erase(left.begin());
+		insertVector(vector, tmp);
+	}
+	while (right.size() > 0)
+	{
+		tmp = right[0];
+		right.erase(right.begin());
+		insertVector(vector, tmp);
+	}
+}
+
+void PmergeMe::insertSortVector(std::vector<int> &vector)
+{
+	int i, ri, tmp;
+	for (i = 0; i < (int)vector.size(); i++)
+	{
+		tmp = vector[i];
+		for (ri = i; ri > 0 && tmp <= vector[ri]; ri--)
+		{
+			vector[ri] = vector[ri - 1];
+		}
+		vector[ri] = tmp;
+	}
+}
+
+void PmergeMe::mergeSortVector(std::vector<int> &vector)
+{
+	if (vector.size() > 100)
+	{
+		std::vector<int>::iterator middle = vector.begin();
+		std::advance(middle, std::distance(vector.begin(), vector.end()) / 2);
+		std::vector<int> left(vector.begin(), middle);
+		mergeSortVector(left);
+		std::vector<int> right(middle, vector.end());
+		mergeSortVector(right);
+		mergeInsertVector(vector, left, right);
+	}
+	else
+		insertSortVector(vector);
 }

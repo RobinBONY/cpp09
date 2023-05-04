@@ -22,19 +22,17 @@
 #ifndef BITCOINEXCHANGE_HPP
 #define BITCOINEXCHANGE_HPP
 
-
 class BitcoinExchange
 {
-
 
 private:
     const std::string _dbname;
     std::map<std::string, float> _data;
 
-    void                            readData();
-    std::string                     removeWhitespaces(const std::string &str) const;
-    char                            findDelimiter(const std::string &line) const;
-    bool                            isValidDate(const std::string &date, const std::string &dateFormat) const;
+    void readData();
+    std::string removeWhitespaces(const std::string &str) const;
+    char findDelimiter(const std::string &line) const;
+    bool isValidDate(const std::string &date) const;
 
     BitcoinExchange(const BitcoinExchange &f);
     BitcoinExchange &operator=(const BitcoinExchange &f);
@@ -42,27 +40,27 @@ private:
 
     class ExchangeException : public std::exception
     {
-        private:
-            const std::string message;
-        public:
-            ExchangeException(std::string message): message(message){};
-            virtual ~ExchangeException() throw() {};
+    private:
+        const std::string message;
 
-           virtual const char *what() const throw()
-           {
+    public:
+        ExchangeException(std::string message) : message(message){};
+        virtual ~ExchangeException() throw(){};
+
+        virtual const char *what() const throw()
+        {
             return this->message.c_str();
-           }
+        }
     };
 
 public:
     BitcoinExchange(const std::string &dbname);
     ~BitcoinExchange();
-    
-    void                            exchange(const std::string &filename) const;
-    std::map<std::string, float>    getData();
+
+    void exchange(const std::string &filename) const;
+    std::map<std::string, float> getData();
 };
 
-
-std::ostream& operator<<(std::ostream& os, const BitcoinExchange& btc);
+std::ostream &operator<<(std::ostream &os, const BitcoinExchange &btc);
 
 #endif
