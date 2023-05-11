@@ -26,10 +26,10 @@ OBJS = ${SRCS:.cpp=.o}
 
 all: $(NAME)
 
-%.o: %.cpp
+%.o: %.cpp $(HEADERS) Makefile
 	${CC} ${FLAGS} -c $< -o $@
 
-$(NAME): $(OBJS) $(HEADERS) Makefile
+$(NAME): $(OBJS)
 	$(CC) $(FLAGS) $(OBJS) -o $(NAME)
 
 clean:

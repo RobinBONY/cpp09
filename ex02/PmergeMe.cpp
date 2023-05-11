@@ -12,6 +12,18 @@
 
 #include "PmergeMe.hpp"
 
+int	PmergeMe::is_num(char* str)
+{
+	for (int i = 0; str[i]; i++)
+	{
+		if (!(str[i] >= 48 && str[i] <= 57))
+		{
+			return (0);
+		}
+	}
+	return (1);
+}
+
 PmergeMe::PmergeMe(int argc, char **argv)
 {
 
@@ -64,8 +76,8 @@ PmergeMe::PmergeMe(int argc, char **argv)
 	}
 	std::cout << std::endl;
 
-	std::cout << "Time to process a range of " << this->_list.size() << " elements with std::list : " << this->_lduration << std::endl;
-	std::cout << "Time to process a range of " << this->_vector.size() << " elements with std::vector : " << this->_vduration << std::endl;
+	std::cout << "Time to process a range of " << this->_list.size() << " elements with std::list : " << this->_lduration << " us" << std::endl;
+	std::cout << "Time to process a range of " << this->_vector.size() << " elements with std::vector : " << this->_vduration << " us" << std::endl;
 }
 
 PmergeMe::~PmergeMe()
@@ -79,13 +91,21 @@ void PmergeMe::sortList(int argc, char **argv)
 	int tmp;
 	for (int i = 1; i < argc; i++)
 	{
-		tmp = std::atoi(argv[i]);
-		if (tmp < 0)
+		if (is_num(argv[i]))
+		{
+			tmp = std::atoi(argv[i]);
+			if (tmp < 0)
+			{
+				OperationException ex("Error");
+				throw ex;
+			}
+			this->_list.push_back(tmp);
+		}
+		else
 		{
 			OperationException ex("Error");
 			throw ex;
 		}
-		this->_list.push_back(tmp);
 	}
 	mergeSortList(this->_list);
 }
@@ -100,65 +120,25 @@ void PmergeMe::mergeSortList(std::list<int> &list)
 		mergeSortList(left);
 		std::list<int> right(middle, list.end());
 		mergeSortList(right);
-		mergeInsertList(list, left, right);
+		right.merge(left);
+		list.clear();
+		list = right;
 	}
 	else
 		insertSortList(list);
 }
 
-void PmergeMe::mergeInsertList(std::list<int> &container, std::list<int> &left, std::list<int> &right)
-{
-	int i;
-	container.clear();
-	while (left.size() > 0 && right.size() > 0)
-	{
-		if (*left.begin() < *right.begin())
-		{
-			i = *left.begin();
-			left.erase(left.begin());
-			insertList(container, i);
-		}
-		else
-		{
-			i = *right.begin();
-			right.erase(right.begin());
-			insertList(container, i);
-		}
-	}
-	while (left.size() > 0)
-	{
-		i = *left.begin();
-		left.erase(left.begin());
-		insertList(container, i);
-	}
-	while (right.size() > 0)
-	{
-		i = *right.begin();
-		right.erase(right.begin());
-		insertList(container, i);
-	}
-}
-
-void PmergeMe::insertList(std::list<int> &container, int i)
-{
-	std::list<int>::iterator it = container.begin();
-	while (it != container.end() && *it < i)
-		it++;
-	container.insert(it, i);
-}
-
 void PmergeMe::insertSortList(std::list<int> &list)
 {
-	std::list<int>::iterator it, rit, tmpit;
-	int tmp;
-	for (it = list.begin(); it != list.end(); it++)
+	std::list<int>::iterator ibegin = list.begin();
+	std::list<int>::iterator jbegin = list.begin();
+	ibegin++;
+	for (std::list<int>::iterator it = ibegin; it != list.end(); it++)
 	{
-		tmp = *it;
-		for (rit = it; rit != list.begin() && tmp <= *rit; rit--)
+		for (std::list<int>::iterator jt = jbegin; jt != list.end(); jt++)
 		{
-			tmpit = rit;
-			tmpit--;
-			std::swap(*rit, *tmpit);
+			if (*it < *jt)
+				std::swap(*it, *jt);
 		}
 	}
 }
@@ -170,13 +150,21 @@ void PmergeMe::sortVector(int argc, char **argv)
 	int tmp;
 	for (int i = 1; i < argc; i++)
 	{
-		tmp = std::atoi(argv[i]);
-		if (tmp < 0)
+		if (is_num(argv[i]))
+		{
+			tmp = std::atoi(argv[i]);
+			if (tmp < 0)
+			{
+				OperationException ex("Error");
+				throw ex;
+			}
+			this->_vector.push_back(tmp);
+		}
+		else
 		{
 			OperationException ex("Error");
 			throw ex;
 		}
-		this->_vector.push_back(tmp);
 	}
 	mergeSortVector(this->_vector);
 }
@@ -224,15 +212,13 @@ void PmergeMe::mergeInsertVector(std::vector<int> &vector, std::vector<int> &lef
 
 void PmergeMe::insertSortVector(std::vector<int> &vector)
 {
-	int i, ri, tmp;
-	for (i = 0; i < (int)vector.size(); i++)
+	for (size_t i = 1; i < vector.size(); i++)
 	{
-		tmp = vector[i];
-		for (ri = i; ri > 0 && tmp <= vector[ri]; ri--)
+		for (size_t j = 0; j < vector.size(); j++)
 		{
-			vector[ri] = vector[ri - 1];
+			if (vector[i] < vector[j])
+				std::swap(vector[i], vector[j]);
 		}
-		vector[ri] = tmp;
 	}
 }
 

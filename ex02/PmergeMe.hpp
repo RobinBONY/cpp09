@@ -40,6 +40,8 @@ private:
 	void insertSortVector(std::vector<int> &vector);
 	void mergeSortVector(std::vector<int> &vector);
 
+	int	is_num(char* str);
+
 	PmergeMe(const PmergeMe &f);
 	PmergeMe &operator=(const PmergeMe &f);
 	PmergeMe();
